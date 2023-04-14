@@ -2,39 +2,39 @@ pipeline {
     agent any
     stages {
         stage('compile') {
-	   steps {
+       steps {
                 echo 'compiling..'
-		git url: 'https://github.com/lerndevops/samplejavaapp'
-		sh script: 'mvn compile'
+        git url: 'https://github.com/lerndevops/samplejavaapp'
+        sh script: 'mvn compile'
            }
         }
         stage('codereview-pmd') {
-	   steps {
+       steps {
                 echo 'codereview..'
-		sh script: 'mvn -P metrics pmd:pmd'
+        sh script: 'mvn -P metrics pmd:pmd'
            }
-	   post {
+       post {
                success {
-		   recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+           recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
                }
-           }		
+           }        
         }
         stage('unit-test') {
-	   steps {
+       steps {
                 echo 'unittest..'
-	        sh script: 'mvn test'
+            sh script: 'mvn test'
                  }
-	   post {
+       post {
                success {
                    junit 'target/surefire-reports/*.xml'
                }
-           }			
+           }            
         }
         stage('package') {
-	   steps {
+       steps {
                 echo 'package......'
-		sh script: 'mvn package'	
-           }		
+        sh script: 'mvn package'    
+           }        
         }
     }
 }
